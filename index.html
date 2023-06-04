@@ -170,6 +170,7 @@
       edit();
       answerComment();
     };
+    fetchPromise();
     renderComents();
 
 
@@ -213,71 +214,56 @@
           </div>
         </li>`;
       
-      fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
+  //     fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         text: textareaInputElement.value, name: textInputElement.value, 
+  //       }),
+  //     }).then ((response) => {
+  //         response.json().then ((responseData) => {
+  //           fetch ('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',{
+  //             method: "GET"
+  //           }).then ((response) => {
+  //           const jsonPromise = response.json();
+  //           jsonPromise.then ((responseData) => {
+  //           const appComments = responseData.comments.map((comment) => {
+  //           const dateComment = new Date(comment.date);
+  //           return {
+  //               name: comment.author.name,
+  //               date: dateComment.getDate().toString().padStart(2, '0') + '.' + 
+  //               (dateComment.getMonth() + 1).toString().padStart(2, '0') + '.' +
+  //               dateComment.getFullYear().toString().slice(-2) + ' ' +
+  //               dateComment.getHours().toString().padStart(2, '0') + ':' +
+  //               dateComment.getMinutes().toString().padStart(2, '0'),
+  //               text: comment.text,
+  //               like: comment.likes,
+  //               isActiveLikes: false,
+  //               }
+  //         })
+  //         comments = appComments;
+  //         renderComents();
+  //         })
+  //     })
+  //   })
+  // })
+  buttonWritter.disabled = true;
+  buttonWritter.textContent = "Элемент добавляется...";
+  fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
         method: "POST",
         body: JSON.stringify({
           text: textareaInputElement.value, name: textInputElement.value, 
         }),
       }).then ((response) => {
-          response.json().then ((responseData) => {
-            fetch ('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',{
-              method: "GET"
-            }).then ((response) => {
-            const jsonPromise = response.json();
-            jsonPromise.then ((responseData) => {
-            const appComments = responseData.comments.map((comment) => {
-            const dateComment = new Date(comment.date);
-            return {
-                name: comment.author.name,
-                date: dateComment.getDate().toString().padStart(2, '0') + '.' + 
-                (dateComment.getMonth() + 1).toString().padStart(2, '0') + '.' +
-                dateComment.getFullYear().toString().slice(-2) + ' ' +
-                dateComment.getHours().toString().padStart(2, '0') + ':' +
-                dateComment.getMinutes().toString().padStart(2, '0'),
-                text: comment.text,
-                like: comment.likes,
-                isActiveLikes: false,
-                }
-          })
-          comments = appComments;
-          renderComents();
-          })
+          return response.json();
       })
-    })
-  })
-    renderComents();
-    
-//       renderComents();
-
-//       const fetchPromise = () => {
-//       return fetch ('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',
-//       {
-//         method: "GET"
-//       })
-//       .then ((response) => {
-//         const jsonPromise = response.json();
-//       jsonPromise.then ((responseData) => {
-//             const appComments = responseData.comments.map((comment) => {
-//             const dateComment = new Date(comment.date);
-//             return {
-//               name: comment.author.name,
-//               date: dateComment.getDate().toString().padStart(2, '0') + '.' + 
-//                 (dateComment.getMonth() + 1).toString().padStart(2, '0') + '.' +
-//                 dateComment.getFullYear().toString().slice(-2) + ' ' +
-//                 dateComment.getHours().toString().padStart(2, '0') + ':' +
-//                 dateComment.getMinutes().toString().padStart(2, '0'),
-//             text: comment.text,
-//             like: comment.likes,
-//             isActiveLikes: false,
-//             }
-//           })
-//           comments = responseData.comments;
-//           renderComents();
-//       })
-//   });
-// }
-      // })
-      // renderComents();
+      .then (() =>{
+        return fetchPromise();
+      })
+      .then ((data) => {
+        buttonWritter.disabled = false;
+        buttonWritter.textContent = "Написать";
+      })
+      renderComents();
 
       textInputElement.value = "";
       textareaInputElement.value = "";
