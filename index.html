@@ -251,23 +251,45 @@
   fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
         method: "POST",
         body: JSON.stringify({
-          text: textareaInputElement.value, name: textInputElement.value, 
+          text: textareaInputElement.value, name: textInputElement.value,
+          forceError: true,
         }),
       }).then ((response) => {
-          return response.json();
-      })
+          console.log(response);
+          if (response.status === 201) {
+            return response.json();
+          } 
+          else if(response.status === 400) {
+            alert ("Поле должно содержать хотя бы 3 символа");//не отражает в консоль//сбрасывает поле, не идет в catch
+            throw new Error ("Пользователь ввел меньше 3 символов");
+          } 
+          else {
+            throw new Error ("У пользователя пропал интернет");
+          }
+        })
       .then (() =>{
         return fetchPromise();
       })
       .then ((data) => {
         buttonWritter.disabled = false;
         buttonWritter.textContent = "Написать";
+        textInputElement.value = "";
+        textareaInputElement.value = "";
+      })
+      .catch ((error) => {
+        buttonWritter.disabled = false;
+        buttonWritter.textContent = "Написать";
+        alert ("Кажется пошло что - то не так, попробуйте позже");
+        // if(error.status === 400) {
+        //     alert ("Поле должно содержать хотя бы 3 символа");
+        //   } else {
+        //     alert ("Кажется пошло что - то не так, попробуйте позже");
+        //   }
+        console.log(error);
+
       })
       renderComents();
 
-      textInputElement.value = "";
-      textareaInputElement.value = "";
-      
     });
   </script>
 </html>
