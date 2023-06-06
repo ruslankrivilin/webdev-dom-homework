@@ -260,15 +260,19 @@
             return response.json();
           } 
           else if(response.status === 400) {
-            alert ("Поле должно содержать хотя бы 3 символа");//не отражает в консоль//сбрасывает поле, не идет в catch
-            throw new Error ("Пользователь ввел меньше 3 символов");
+            alert ("Поле должно содержать хотя бы 3 символа");
+            throw new Error ("Пользователь ввел меньше 3 символов");          
           } 
           else {
+            alert ("Кажется пошло что - то не так, попробуйте позже");
             throw new Error ("У пользователя пропал интернет");
+
           }
+          
         })
       .then (() =>{
         return fetchPromise();
+        return renderComents();
       })
       .then ((data) => {
         buttonWritter.disabled = false;
@@ -279,7 +283,7 @@
       .catch ((error) => {
         buttonWritter.disabled = false;
         buttonWritter.textContent = "Написать";
-        alert ("Кажется пошло что - то не так, попробуйте позже");
+        
         // if(error.status === 400) {
         //     alert ("Поле должно содержать хотя бы 3 символа");
         //   } else {
