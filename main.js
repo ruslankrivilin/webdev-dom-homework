@@ -1,65 +1,39 @@
 
-import { fetchPromise } from "./api.js";
-import { renderComents } from "./renderComents.js";
+import { fetchPromise, postPromise } from "./api.js";
+import { renderComments } from "./renderComments.js";
 const buttonWritter = document.getElementById("writter");
 const textInputElement = document.getElementById("add-text");
 const textareaInputElement = document.getElementById("add-textarea");
 const listElement = document.getElementById("list");
-const deletElement = document.getElementById("comments.text");
 
 
 let comments = [];
 
-const fetchPromise = () => {
-  return fetch ('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',
-  {
-    method: "GET"
-  })
-  .then ((response) => {
-    return response.json();
-  })
-  .then ((responseData) => {
-        const appComments = responseData.comments.map((comment) => {
-        const dateComment = new Date(comment.date);
-        return {
-          name: comment.author.name,
-          date: dateComment.getDate().toString().padStart(2, '0') + '.' + 
-            (dateComment.getMonth() + 1).toString().padStart(2, '0') + '.' +
-            dateComment.getFullYear().toString().slice(-2) + ' ' +
-            dateComment.getHours().toString().padStart(2, '0') + ':' +
-            dateComment.getMinutes().toString().padStart(2, '0'),
-        text: comment.text,
-        like: comment.likes,
-        isActiveLikes: false,
 
-        }
-      })
-      comments = appComments;
-      renderComents();
-  })
-}
-fetchPromise()
+fetchPromise().then (data => {
+  renderComments(data);
+})
   
 
-const likes = () => {
-const likeButtons = document.querySelectorAll('.like-button');
-    for (const likeButton of likeButtons) {
-        likeButton.addEventListener('click', (e) => {
-        e.stopPropagation()
-        const index = likeButton.dataset.index;
-    if (likeButton.classList.contains('-active-like')) {
-      comments[index].like = Number(comments[index].like) -1;
-      comments[index].isActiveLike = false;
-    } else {
-      comments[index].like = Number(comments[index].like) +1;
-      comments[index].isActiveLike = true;
-    }
-        renderComents();
-        });
-    };
-};
+// export const likes = () => {
+// const likeButtons = document.querySelectorAll('.like-button');
+//     for (const likeButton of likeButtons) {
+//         likeButton.addEventListener('click', (e) => {
+//         e.stopPropagation()
+//         const index = likeButton.dataset.index;
+//     if (likeButton.classList.contains('-active-like')) {
+//       comments[index].like = Number(comments[index].like) -1;
+//       comments[index].isActiveLike = false;
+//     } else {
+//       comments[index].like = Number(comments[index].like) +1;
+//       comments[index].isActiveLike = true;
+//     }
+//         renderComments(comments);
+//         });
+//     };
+// };
 
-const edit = () => {
+export const edit = () => {
 const editButtons = document.querySelectorAll('.edit-button');
 const commentBody = document.querySelectorAll('.comment-body');
 
@@ -77,13 +51,13 @@ editButtons.forEach((button, index) => {
     }
 
     comment.isEdit = !comment.isEdit;
-    renderComents();
+    renderComments(comments);
     })
   });
 
 }
 
-const answerComment = () => {
+export const answerComment = () => {
   const comentsElement = document.querySelectorAll('.comment')
   for (const comentElement of comentsElement) {
     comentElement.addEventListener("click", () => {
@@ -101,44 +75,10 @@ const answerComment = () => {
 }
 }
 
-const renderComents = () => {
-const comentsHtml = comments.map((item, index) => {
-  let activeLike = '';
-  if (comments[index].isActiveLike) {
-    activeLike ='-active-like'
-  } 
-  return `<li class="comment">
-            <div class="comment-all">
-            <div class="comment-header">
-              <div>${item.name}</div>
-              <div>${item.date}</div>
-            </div>
-            <div class="comment-body">
-              <div class="${item.isEdit ? 'none-visible' : 'comment-text'}">
-                ${item.text}
-              </div>
-            </div>
-            </div>
-            <div class="comment-footer">
-              
-              <div class="likes">
-                <span class="likes-counter">${item.like}</span>
-                <button class="like-button ${activeLike}" data-index='${index}'></button>
-              </div>
-            </div>
-          </li>`
-        }
-      )
-      .join('') ; 
-    listElement.innerHTML = comentsHtml;
-  likes();
-  edit();
-  answerComment();
-};
+
 fetchPromise();
 
 buttonWritter.addEventListener ('click',() => {
-  
   textInputElement.style.backgroundColor = "";
   textareaInputElement.style.backgroundColor = "";
   if (textInputElement.value === "" || textareaInputElement.value === "") {
@@ -178,29 +118,11 @@ buttonWritter.addEventListener ('click',() => {
 
 buttonWritter.disabled = true;
 buttonWritter.textContent = "Элемент добавляется...";
-fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
-    method: "POST",
-    body: JSON.stringify({
-      text: textareaInputElement.value, name: textInputElement.value,
-      forceError: true,
-    }),
-  }).then ((response) => {
-      console.log(response);
-      if (response.status === 201) {
-        return response.json();
-      } 
-      else if(response.status === 400) {
-        alert ("Поле должно содержать хотя бы 3 символа");
-        throw new Error ("Пользователь ввел меньше 3 символов");          
-      } 
-      else {
-        alert ("Кажется, что - то пошло не так, попробуйте позже");
-        throw new Error ("У пользователя пропал интернет");
-      }
-      
-    })
+const text = textareaInputElement.value;
+const name = textInputElement.value;
+postPromise(text, name)
   .then (() =>{
-    return fetchPromise();
+    return fetchPromise(text, name);
   })
   .then ((data) => {
     buttonWritter.disabled = false;
@@ -216,6 +138,6 @@ fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
     buttonWritter.disabled = false;
     buttonWritter.textContent = "Написать";
   })
-  renderComents();
+  renderComments(comments);
 
 });

@@ -1,4 +1,5 @@
-export const renderComents = () => {
+import { edit, answerComment } from "./main.js";
+export const renderComments = (comments) => {
     const comentsHtml = comments.map((item, index) =>{
       let activeLike = '';
       if (comments[index].isActiveLike) {
@@ -27,7 +28,25 @@ export const renderComents = () => {
             }
           )
           .join('') ; 
+          const listElement = document.getElementById("list");
         listElement.innerHTML = comentsHtml;
+        const likes = () => {
+          const likeButtons = document.querySelectorAll('.like-button');
+              for (const likeButton of likeButtons) {
+                  likeButton.addEventListener('click', (e) => {
+                  e.stopPropagation()
+                  const index = likeButton.dataset.index;
+              if (likeButton.classList.contains('-active-like')) {
+                comments[index].like = Number(comments[index].like) -1;
+                comments[index].isActiveLike = false;
+              } else {
+                comments[index].like = Number(comments[index].like) +1;
+                comments[index].isActiveLike = true;
+              }
+                  renderComments(comments);
+                  });
+              };
+          };
       likes();
       edit();
       answerComment();
