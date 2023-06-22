@@ -51,3 +51,4 @@ export const renderComments = (comments) => {
       edit();
       answerComment();
     };
+    
