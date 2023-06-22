@@ -1,3 +1,4 @@
+import { renderComments } from "./renderComments.js";
 
     export function fetchPromise() {
       return fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',
@@ -21,7 +22,7 @@
             };
           });
 
-          return appComments;
+          renderComments(appComments);
         });
     }
 
@@ -38,12 +39,13 @@
             return response.json();
           } 
           else if(response.status === 400) {
-            alert ("Поле должно содержать хотя бы 3 символа");
-            throw new Error ("Пользователь ввел меньше 3 символов");          
+            throw new Error ("Неверный запрос");          
           } 
+          else if(response.status === 500) {
+            throw new Error ("Пропал интернет");
+          }
           else {
-            alert ("Кажется, что - то пошло не так, попробуйте позже");
-            throw new Error ("У пользователя пропал интернет");
+            throw new Error ("Неизвестная ошибка");
           }
           
         })

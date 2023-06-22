@@ -10,10 +10,7 @@ const listElement = document.getElementById("list");
 let comments = [];
 
 
-fetchPromise().then (data => {
-  renderComments(data);
-})
-  
+fetchPromise();
 
 // export const likes = () => {
 // const likeButtons = document.querySelectorAll('.like-button');
@@ -122,7 +119,7 @@ const text = textareaInputElement.value;
 const name = textInputElement.value;
 postPromise(text, name)
   .then (() =>{
-    return fetchPromise(text, name);
+    return fetchPromise();
   })
   .then ((data) => {
     buttonWritter.disabled = false;
@@ -132,6 +129,13 @@ postPromise(text, name)
   })
   .catch ((error) => {
     console.log(error);
+    if (error.message === "Пропал интернет") {
+      alert("Кажется, что - то пошло не так, попробуйте позже");
+    }
+
+    if (error.message === "Неверный запрос") {
+      alert("Имя и комментарий должны быть не короче 3х символов");
+    }
 
   })
   .finally (()=> {
