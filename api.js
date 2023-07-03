@@ -1,9 +1,56 @@
-import { renderComments } from "./renderComments.js";
+    let token = "asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+
+    const host = 'https://wedev-api.sky.pro/api/v2/ruslankrivilin/comments';
+
+    const hostV1 = 'https://wedev-api.sky.pro/api';
+
+    export const setToken = (newToken) => {
+      token = newToken;
+    };
+
+    export const getToken = ( ) => {
+      return token
+    }; 
+
+    //Функция входа по логину 
+export const loginUser = (login, password) => {
+  return fetch(
+    `${hostV1}/user/login`,
+    {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password
+    })
+  }).then((response) => {
+    return response.json()
+  }) 
+}
+
+// Функция регистрации юзера
+export const regUser = (login, password, name) => {
+  return fetch(
+    `${hostV1}/user`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        login,
+        password,
+        name,
+      })
+    }
+  ).then((response) => {
+    return response.json()
+  })
+}
 
     export function fetchPromise() {
-      return fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments',
+      return fetch(host,
       {
-      method: "GET"
+      method: "GET",
+      headers: {
+        Authorization: token,
+        },
       })
         .then((res) => res.json())
         .then((responseData) => {
@@ -22,12 +69,13 @@ import { renderComments } from "./renderComments.js";
             };
           });
 
-          renderComments(appComments);
+          // renderComments(appComments);
+          return appComments;
         });
     }
 
     export function postPromise(text, name) {
-    return fetch('https://webdev-hw-api.vercel.app/api/v1/ruslankrivilin/comments', {
+    return fetch(host, {
         method: "POST",
         body: JSON.stringify({
           text:text, name:name,

@@ -1,11 +1,12 @@
 
 import { fetchPromise, postPromise } from "./api.js";
 import { renderComments } from "./renderComments.js";
-const buttonWritter = document.getElementById("writter");
+// const buttonWritter = document.getElementById("writter");
 const textInputElement = document.getElementById("add-text");
 const textareaInputElement = document.getElementById("add-textarea");
-const listElement = document.getElementById("list");
+// const listElement = document.getElementById("list");
 
+const app = document.getElementById("app");
 
 let comments = [];
 
@@ -48,7 +49,7 @@ editButtons.forEach((button, index) => {
     }
 
     comment.isEdit = !comment.isEdit;
-    renderComments(comments);
+    renderComments(app, user, comments);
     })
   });
 
@@ -75,73 +76,73 @@ export const answerComment = () => {
 
 fetchPromise();
 
-buttonWritter.addEventListener ('click',() => {
-  textInputElement.style.backgroundColor = "";
-  textareaInputElement.style.backgroundColor = "";
-  if (textInputElement.value === "" || textareaInputElement.value === "") {
-    textInputElement.style.backgroundColor = "red";
-    textareaInputElement.style.backgroundColor = "red"
-    return;
-  }
-  const date = new Date();
-  const formattedDate =
-  date.getDate().toString().padStart(2, '0') + '.' + 
-  (date.getMonth() + 1).toString().padStart(2, '0') + '.' +
-  date.getFullYear().toString().slice(-2) + ' ' +
-  date.getHours().toString().padStart(2, '0') + ':' +
-  date.getMinutes().toString().padStart(2, '0');
-  const oldlistElement = listElement.innerHTML
-  listElement.innerHTML = oldlistElement + `<li class="comment">
-      <div class="comment-all">
-      <div class="comment-header">
-        <div>${textInputElement.value}
-        </div>
-        <div> ${formattedDate}
-        </div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">
-          ${textareaInputElement.value}
-        </div>
-      </div>
-      </div>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">0</span>
-          <button class="like-button"></button>
-        </div>
-      </div>
-    </li>`;
+// buttonWritter.addEventListener ('click',() => {
+//   textInputElement.style.backgroundColor = "";
+//   textareaInputElement.style.backgroundColor = "";
+//   if (textInputElement.value === "" || textareaInputElement.value === "") {
+//     textInputElement.style.backgroundColor = "red";
+//     textareaInputElement.style.backgroundColor = "red"
+//     return;
+//   }
+//   const date = new Date();
+//   const formattedDate =
+//   date.getDate().toString().padStart(2, '0') + '.' + 
+//   (date.getMonth() + 1).toString().padStart(2, '0') + '.' +
+//   date.getFullYear().toString().slice(-2) + ' ' +
+//   date.getHours().toString().padStart(2, '0') + ':' +
+//   date.getMinutes().toString().padStart(2, '0');
+//   const oldlistElement = listElement.innerHTML
+//   listElement.innerHTML = oldlistElement + `<li class="comment">
+//       <div class="comment-all">
+//       <div class="comment-header">
+//         <div>${textInputElement.value}
+//         </div>
+//         <div> ${formattedDate}
+//         </div>
+//       </div>
+//       <div class="comment-body">
+//         <div class="comment-text">
+//           ${textareaInputElement.value}
+//         </div>
+//       </div>
+//       </div>
+//       <div class="comment-footer">
+//         <div class="likes">
+//           <span class="likes-counter">0</span>
+//           <button class="like-button"></button>
+//         </div>
+//       </div>
+//     </li>`;
 
-buttonWritter.disabled = true;
-buttonWritter.textContent = "Элемент добавляется...";
-const text = textareaInputElement.value;
-const name = textInputElement.value;
-postPromise(text, name)
-  .then (() =>{
-    return fetchPromise();
-  })
-  .then ((data) => {
-    buttonWritter.disabled = false;
-    buttonWritter.textContent = "Написать";
-    textInputElement.value = "";
-    textareaInputElement.value = "";
-  })
-  .catch ((error) => {
-    console.log(error);
-    if (error.message === "Пропал интернет") {
-      alert("Кажется, что - то пошло не так, попробуйте позже");
-    }
+// buttonWritter.disabled = true;
+// buttonWritter.textContent = "Элемент добавляется...";
+// const text = textareaInputElement.value;
+// const name = textInputElement.value;
+// postPromise(text, name)
+//   .then (() =>{
+//     return fetchPromise();
+//   })
+//   .then ((data) => {
+//     buttonWritter.disabled = false;
+//     buttonWritter.textContent = "Написать";
+//     textInputElement.value = "";
+//     textareaInputElement.value = "";
+//   })
+//   .catch ((error) => {
+//     console.log(error);
+//     if (error.message === "Пропал интернет") {
+//       alert("Кажется, что - то пошло не так, попробуйте позже");
+//     }
 
-    if (error.message === "Неверный запрос") {
-      alert("Имя и комментарий должны быть не короче 3х символов");
-    }
+//     if (error.message === "Неверный запрос") {
+//       alert("Имя и комментарий должны быть не короче 3х символов");
+//     }
 
-  })
-  .finally (()=> {
-    buttonWritter.disabled = false;
-    buttonWritter.textContent = "Написать";
-  })
-  renderComments(comments);
+//   })
+//   .finally (()=> {
+//     buttonWritter.disabled = false;
+//     buttonWritter.textContent = "Написать";
+//   })
+//   renderComments(app, comments);
 
-});
+// });
